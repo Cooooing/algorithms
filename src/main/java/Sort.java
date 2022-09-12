@@ -2,6 +2,97 @@ import java.util.Arrays;
 
 public class Sort {
 
+    /**
+     * 快速排序
+     * 从数列中挑出一个元素，称为 "基准"（pivot）;
+     * 重新排序数列，所有元素比基准值小的摆放在基准前面，所有元素比基准值大的摆在基准的后面（相同的数可以到任一边）。在这个分区退出之后，该基准就处于数列的中间位置。这个称为分区（partition）操作；
+     * 递归地（recursive）把小于基准值元素的子数列和大于基准值元素的子数列排序；
+     * 类似荷兰国旗问题
+     * 时间复杂度 O(n^2)
+     * 但它的平摊期望时间是O(nlongn)，而且隐含的常数因子很小，比归并小很多。所以对绝大多数顺序性较弱的随机数列来说，快排优于归并
+     */
+    public static int[] quickSort(int[] array) {
+        int[] arr = Arrays.copyOf(array, array.length);
+        return quickSortProcess(arr, 0, arr.length - 1);
+    }
+
+    /**
+     * 递归调用划分函数进行排序
+     */
+    private static int[] quickSortProcess(int[] arr, int l, int r) {
+        if (l < r) {
+            int partitionIndex = partition(arr, l, r);
+            quickSortProcess(arr, l, partitionIndex - 1);
+            quickSortProcess(arr, partitionIndex + 1, r);
+        }
+        return arr;
+    }
+
+    /**
+     * 选取基准值，进行划分
+     */
+    private static int partition(int[] arr, int l, int r) {
+        // 选取基准值
+        int pivot = l;
+        int index = pivot + 1;
+        for (int i = index; i <= r; i++) {
+            if (arr[i] < arr[pivot]) {
+                swap(arr, i, index);
+                index++;
+            }
+        }
+        swap(arr, pivot, index - 1);
+        return index - 1;
+    }
+
+
+    /**
+     * 归并排序
+     * 申请空间，使其大小为两个已经排序序列之和，该空间用来存放合并后的序列；
+     * 设定两个指针，最初位置分别为两个已经排序序列的起始位置；
+     * 比较两个指针所指向的元素，选择相对小的元素放入到合并空间，并移动指针到下一位置；
+     * 重复步骤 3 直到某一指针达到序列尾；
+     * 将另一序列剩下的所有元素直接复制到合并序列尾。
+     * 时间复杂度 O(nlogn)
+     * 额外空间复杂度 O(n)
+     */
+    public static int[] mergeSort(int[] array) {
+        int[] arr = Arrays.copyOf(array, array.length);
+        // 临时数组，用于存放排序后的数组
+        int[] tempArray = new int[array.length];
+        merge(arr, tempArray, 0, array.length - 1);
+        return arr;
+    }
+
+    private static void merge(int[] array, int[] tempArray, int start, int end) {
+        if (start >= end) {
+            return;
+        }
+        int mid = start + ((end - start) >> 2);
+        int start1 = start;
+        int end1 = mid;
+        int start2 = mid + 1;
+        int end2 = end;
+        merge(array, tempArray, start1, end1);
+        merge(array, tempArray, start2, end2);
+        int temp = start;
+        // 比较两个数组元素，将较小的放到合并空间。直至其中一个数组遍历结束
+        while (start1 <= end1 && start2 <= end2) {
+            tempArray[temp++] = array[start1] < array[start2] ? array[start1++] : array[start2++];
+        }
+        // 将剩余元素添加至合并空间末尾
+        while (start1 <= end1) {
+            tempArray[temp++] = array[start1++];
+        }
+        while (start2 <= end2) {
+            tempArray[temp++] = array[start2++];
+        }
+        // 拷贝合并空间内排序结束的数组至原数组
+        for (temp = start; temp <= end; temp++) {
+            array[temp] = tempArray[temp];
+        }
+    }
+
 
     /**
      * 插入排序
