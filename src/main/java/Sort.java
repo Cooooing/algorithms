@@ -45,6 +45,44 @@ public class Sort {
         return index - 1;
     }
 
+    /**
+     * 递归调用划分函数进行排序（优化）
+     * 优化了等于基准的部分，使得每次排序时，一次可以排所有等于基准的元素。比之前每次只排基准好一些。
+     * 但也只是针对有重复元素的排序
+     */
+    private static int[] quickSortProcessOptimization(int[] arr, int l, int r) {
+        if (l < r) {
+            int[] partitionIndex = partitionOptimization(arr, l, r);
+            partitionOptimization(arr, l, partitionIndex[0]);
+            partitionOptimization(arr, partitionIndex[1], r);
+        }
+        return arr;
+    }
+
+    /**
+     * 选取基准值，进行划分（优化）
+     */
+    private static int[] partitionOptimization(int[] arr, int l, int r) {
+        // 选取基准值
+        int pivot = l;
+        r++;
+        int i = l + 1;
+        while (i < r) {
+            if (arr[i] < arr[pivot]) {
+                // 小于时，交换左边界+1的元素，左边界l+1，判断下一个元素（交换过来元素都已经过判断）
+                swap(arr, ++l, i++);
+            } else if (arr[i] > arr[pivot]) {
+                // 大于时，交换有边界-1的元素，右边界r-1，判断原位置，因为交换后的元素未经过判断
+                swap(arr, --r, i);
+            } else {
+                // 相等时，什么都不做，判断下一个元素
+                i++;
+            }
+        }
+        swap(arr, pivot, l--);
+        return new int[]{l, r};
+    }
+
 
     /**
      * 归并排序
