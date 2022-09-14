@@ -5,8 +5,10 @@ import java.util.Arrays;
 public class Test01 {
     @Test
     public void test() {
-        int[] a = new int[]{1, 3, 4, 5, 2};
-        a = new int[]{4, 2, 5, 1, 6,4,4,4,6,7,3,2,3};
-    }
 
+        int[] arr = new int[]{2, 5, 3, 1, 4};
+        System.out.println(Arrays.toString(Sort.shellSort(arr)));
+
+
+    }
 }

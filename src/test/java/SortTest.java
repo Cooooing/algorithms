@@ -14,17 +14,22 @@ public class SortTest {
     7.当样本数量很多时比对测试依然正确，可以确定方法a已经正确。
      */
     @Test
-    public void SortTest() {
-        int[] a = new int[100];
+    public void sortTest() {
+        int[] a = new int[1000];
 
-        for (int i = 0; i < 100; i++) {
-            a[i] = (int) (100 * Math.random());
+        for (int i = 0; i < 1000; i++) {
+            a[i] = (int) (-1000 * Math.random() + 500);
         }
         System.out.println(Arrays.toString(Sort.insertionSort(a)));
         System.out.println(Arrays.toString(Sort.bubbleSort(a)));
         System.out.println(Arrays.toString(Sort.selectionSort(a)));
         System.out.println(Arrays.toString(Sort.mergeSort(a)));
         System.out.println(Arrays.toString(Sort.quickSort(a)));
+        System.out.println(Arrays.toString(Sort.heapSort(a)));
+        System.out.println(Arrays.toString(Sort.radixSort(a)));
+        System.out.println(Arrays.toString(Sort.countingSort(a)));
+        System.out.println(Arrays.toString(Sort.bucketSort(a)));
+        System.out.println(Arrays.toString(Sort.shellSort(a)));
 
         Arrays.sort(a);
         System.out.println(Arrays.toString(a));

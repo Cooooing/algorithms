@@ -1,6 +1,228 @@
 import java.util.Arrays;
 
 public class Sort {
+    /*
+    综合排序
+    将不同排序的优势结合在一起
+     */
+
+    /*
+    排序算法的稳定性
+    同样值的个体之间，如果不因为排序而改变相对次序，就是这个排序是有稳定性的；否则就没有。
+
+    不具备稳定性的排序：
+    选择排序、快速排序、堆排序、希尔排序
+
+    具备稳定性的排序：
+    冒泡排序、插入排序、归并排序、一切桶排序思想下的排序
+
+    目前没有找到时间复杂度 0(n1ogn) ，额外空间复杂度0(1)，又稳定的排序。
+    基于比较的排序，时间复杂度至少 O(nlogn)
+    稳定的排序，空间复杂度至少 O(n)
+     */
+
+    /*
+    基数排序与计数排序、桶排序这三种排序算法都利用了桶的概念，但对桶的使用方式不同
+    基数排序：根据键值的每位数字来分配桶；
+    计数排序：每个桶只存储单一键值；
+    桶排序：每个桶存储一定范围的数值；
+     */
+
+    /**
+     * 桶排序（计数排序的升级版）
+     * 利用了函数的映射关系，高效与否的关键就在于这个映射函数的确定。为了使桶排序更加高效，我们需要做到这两点：
+     * 在额外空间充足的情况下，尽量增大桶的数量
+     * 使用的映射函数能够将输入的 N 个数据均匀的分配到 K 个桶中
+     * 时间复杂度 O(n+k)
+     * 空间复杂度 O(n*k)
+     */
+    public static int[] bucketSort(int[] array) {
+        int[] arr = Arrays.copyOf(array, array.length);
+        // 获取最大、最小值
+        int min = arr[0];
+        int max = arr[0];
+        for (int value : arr) {
+            if (min > value) {
+                min = value;
+            }
+            if (max < value) {
+                max = value;
+            }
+        }
+        // 桶的数量
+        int bucketSize = 5;
+        int bucketCount = (max - min) / bucketSize + 1;
+        int[][] buckets = new int[bucketCount][0];
+        // 利用函数映射关系将数据分配到各个桶中
+        for (int j : arr) {
+            int index = (j - min) / bucketSize;
+            buckets[index] = arrayAppend(buckets[index], j);
+        }
+        // 对每个桶进行排序
+        int arrIndex = 0;
+        for (int[] bucket : buckets) {
+            if (bucket.length <= 0) {
+                continue;
+            }
+            // 使用了冒泡排序
+            bucket = bubbleSort(bucket);
+            for (int value : bucket) {
+                arr[arrIndex++] = value;
+            }
+        }
+        return arr;
+    }
+
+    /**
+     * 计数排序
+     * 找出待排序的数组中最大和最小的元素
+     * 统计数组中每个值为i的元素出现的次数，存入数组C的第i项
+     * 对所有的计数累加（从C中的第一个元素开始，每一项和前一项相加）
+     * 反向填充目标数组：将每个元素i放在新数组的第C(i)项，每放一个元素就将C(i)减去1
+     * 时间复杂度 O(n+k)
+     * 空间复杂度 O(k)
+     * 空间换时间
+     */
+    public static int[] countingSort(int[] array) {
+        int[] arr = Arrays.copyOf(array, array.length);
+        // 获取最大、最小值
+        int min = arr[0];
+        int max = arr[0];
+        for (int value : arr) {
+            if (min > value) {
+                min = value;
+            }
+            if (max < value) {
+                max = value;
+            }
+        }
+        // 处理负数的情况
+        int difference = 0;
+        if (min < 0) {
+            difference = -min;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] += difference;
+        }
+        // 排序
+        int[] bucket = new int[max + difference + 1];
+        for (int value : arr) {
+            bucket[value]++;
+        }
+        int socketIndex = 0;
+        for (int i = 0; i < bucket.length; i++) {
+            while (bucket[i] > 0) {
+                arr[socketIndex++] = i - difference;
+                bucket[i]--;
+            }
+        }
+        return arr;
+    }
+
+    /**
+     * 基数排序
+     * 一种非比较型整数排序算法
+     * 其原理是将整数按位数切割成不同的数字，然后按每个位数分别比较。由于整数也可以表达字符串（比如名字或日期）和特定格式的浮点数，所以基数排序也不是只能使用于整数。
+     * 时间复杂度 O(k*n)
+     * 空间复杂度 O(k+n)
+     */
+    public static int[] radixSort(int[] array) {
+        int[] arr = Arrays.copyOf(array, array.length);
+        // 获取最大值
+        int max = arr[0];
+        for (int j : arr) {
+            if (max < j) {
+                max = j;
+            }
+        }
+        // 获取最高位数
+        int maxDigit = 0;
+        if (max == 0) {
+            maxDigit = 1;
+        } else {
+            for (int i = max; i != 0; i /= 10) {
+                maxDigit++;
+            }
+        }
+        // 排序
+        int mod = 10;
+        int dev = 1;
+        for (int i = 0; i < maxDigit; i++, dev *= 10, mod *= 10) {
+            // 考虑负数的情况，这里扩展一倍队列数，其中 [0-9]对应负数，[10-19]对应正数 (bucket + 10)
+            int[][] counter = new int[mod * 2][0];
+            for (int k : arr) {
+                int bucket = ((k % mod) / dev) + mod;
+                counter[bucket] = arrayAppend(counter[bucket], k);
+            }
+            int pos = 0;
+            for (int[] bucket : counter) {
+                for (int value : bucket) {
+                    arr[pos++] = value;
+                }
+            }
+        }
+        return arr;
+    }
+
+    /**
+     * 自动扩容，并保存数据
+     */
+    private static int[] arrayAppend(int[] arr, int value) {
+        arr = Arrays.copyOf(arr, arr.length + 1);
+        arr[arr.length - 1] = value;
+        return arr;
+    }
+
+    /**
+     * 堆排序
+     * 创建一个堆 H[0……n-1]；
+     * 把堆首（最大值）和堆尾互换；
+     * 把堆的尺寸缩小 1，并调用 shift_down(0)，目的是把新的数组顶端数据调整到相应位置；
+     * 重复步骤 2，直到堆的尺寸为 1。
+     * 时间复杂度 O(nlogn)
+     */
+    public static int[] heapSort(int[] array) {
+        int[] arr = Arrays.copyOf(array, array.length);
+        int len = arr.length;
+        /* 创建大根堆
+        从最后一个父节点（即len/2的位置）开始进行 heapify 过程
+         */
+        for (int i = len / 2; i >= 0; i--) {
+            heapify(arr, i, len);
+        }
+        /* 排序
+        将最大的根与堆尾交换，同时堆尺寸减一，即排好最大的
+        然后再重新与子节点比较，将大的值换到根
+         */
+        for (int i = len - 1; i > 0; i--) {
+            swap(arr, 0, i);
+            len--;
+            heapify(arr, 0, len);
+        }
+        return arr;
+    }
+
+    /**
+     * 使得一个数组是堆有序的，即根节点的值大于（小于）左右子节点的值
+     */
+    private static void heapify(int[] arr, int i, int len) {
+        // 左节点
+        int left = 2 * i + 1;
+        // 右节点
+        int right = 2 * i + 2;
+        // 父节点
+        int largest = i;
+        if (left < len && arr[left] > arr[largest]) {
+            largest = left;
+        }
+        if (right < len && arr[right] > arr[largest]) {
+            largest = right;
+        }
+        if (largest != i) {
+            swap(arr, i, largest);
+            heapify(arr, largest, len);
+        }
+    }
 
     /**
      * 快速排序
@@ -9,6 +231,7 @@ public class Sort {
      * 递归地（recursive）把小于基准值元素的子数列和大于基准值元素的子数列排序；
      * 类似荷兰国旗问题
      * 时间复杂度 O(n^2)
+     * 空间复杂度 O(logn)
      * 但它的平摊期望时间是O(nlongn)，而且隐含的常数因子很小，比归并小很多。所以对绝大多数顺序性较弱的随机数列来说，快排优于归并
      */
     public static int[] quickSort(int[] array) {
@@ -92,7 +315,7 @@ public class Sort {
      * 重复步骤 3 直到某一指针达到序列尾；
      * 将另一序列剩下的所有元素直接复制到合并序列尾。
      * 时间复杂度 O(nlogn)
-     * 额外空间复杂度 O(n)
+     * 空间复杂度 O(n)
      */
     public static int[] mergeSort(int[] array) {
         int[] arr = Arrays.copyOf(array, array.length);
@@ -131,6 +354,31 @@ public class Sort {
         }
     }
 
+    /**
+     * 希尔排序（快排的改进）
+     * 希尔排序是基于插入排序的以下两点性质而提出改进方法的：
+     * 插入排序在对几乎已经排好序的数据操作时，效率高，即可以达到线性排序的效率；
+     * 但插入排序一般来说是低效的，因为插入排序每次只能将数据移动一位；
+     * 希尔排序的基本思想是：先将整个待排序的记录序列分割成为若干子序列分别进行直接插入排序，待整个序列中的记录"基本有序"时，再对全体记录进行依次直接插入排序。
+     * 时间复杂度 O(nlog2n)
+     */
+    public static int[] shellSort(int[] array) {
+        int[] arr = Arrays.copyOf(array, array.length);
+        int temp;
+        // 每次增量为数组长度的一半，以后每次减半
+        for (int step = arr.length / 2; step >= 1; step /= 2) {
+            for (int i = step; i < arr.length; i++) {
+                temp = arr[i];
+                int j = i - step;
+                while (j >= 0 && arr[j] > temp) {
+                    arr[j + step] = arr[j];
+                    j -= step;
+                }
+                arr[j + step] = temp;
+            }
+        }
+        return arr;
+    }
 
     /**
      * 插入排序

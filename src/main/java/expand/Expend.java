@@ -5,6 +5,15 @@ import java.util.Arrays;
 
 public class Expend {
 
+    /*
+    堆排序扩展
+     */
+
+
+    /*
+    快排前置
+     */
+
     /**
      * 荷兰国旗问题
      * 给定一个整数数组，给定一个值K，这个值在原数组中一定存在
