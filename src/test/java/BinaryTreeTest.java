@@ -1,4 +1,5 @@
 import BinaryTree.BinaryTree;
+import BinaryTree.Expend;
 import BinaryTree.Node;
 import org.junit.Test;
 
@@ -36,7 +37,38 @@ public class BinaryTreeTest {
         System.out.print("层次遍历：");
         BinaryTree.LevelTraversal(head);
         System.out.println();
-        System.out.println("树的宽度："+BinaryTree.getWidth(head));
-        System.out.println("树的深度："+BinaryTree.getDepth(head));
+        System.out.println("树的宽度：" + BinaryTree.getWidth(head));
+        System.out.println("树的深度：" + BinaryTree.getDepth(head));
+    }
+
+    @Test
+    public void expendTest() {
+        //        Node head=null;
+        Node head = new Node(1);
+        head.left = new Node(2);
+        head.right = new Node(3);
+        head.left.right = new Node(4);
+        head.right.left = new Node(5);
+        head.right.right = new Node(6);
+        head.right.left.left = new Node(7);
+        head.right.right.right = new Node(8);
+
+        Node res = Expend.getPublic(head, head.right.right.right, head.right.left.left);
+        if (res != null) {
+            System.out.println(res.data);
+        } else {
+            System.out.println((Object) null);
+        }
+        Node res_ = Expend.getPublic_(head, head.right.right.right, head.right.left.left);
+        if (res_ != null) {
+            System.out.println(res_.data);
+        } else {
+            System.out.println((Object) null);
+        }
+    }
+
+    @Test
+    public void origamiTest(){
+        Expend.origami(3);
     }
 }
