@@ -15,12 +15,25 @@ public class BinaryTreeTest {
         head.right.left.left = new Node(7);
         head.right.right.right = new Node(8);
 
+        System.out.print("先序遍历（递归）：");
         BinaryTree.PreorderTraversal(head);
         System.out.println();
+        System.out.print("先序遍历（循环）：");
+        BinaryTree.PreorderTraversal_(head);
+        System.out.println();
+        System.out.print("中序遍历（递归）：");
         BinaryTree.MiddleTraversal(head);
         System.out.println();
+        System.out.print("中序遍历（循环）：");
+        BinaryTree.MiddleTraversal_(head);
+        System.out.println();
+        System.out.print("中序遍历（递归）：");
         BinaryTree.PostorderTraversal(head);
         System.out.println();
+        System.out.print("后序遍历（循环）：");
+        BinaryTree.PostorderTraversal_(head);
+        System.out.println();
+        System.out.print("层次遍历：");
         BinaryTree.LevelTraversal(head);
         System.out.println();
         System.out.println("树的宽度："+BinaryTree.getWidth(head));
