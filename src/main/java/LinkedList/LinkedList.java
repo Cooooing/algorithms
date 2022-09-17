@@ -3,8 +3,8 @@ package LinkedList;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
-链表相关
+/**
+ * 单链表相关
  */
 public class LinkedList {
 

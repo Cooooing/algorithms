@@ -6,11 +6,6 @@ import java.util.Arrays;
 public class Expend {
 
     /*
-    堆排序扩展
-     */
-
-
-    /*
     快排前置
      */
 
