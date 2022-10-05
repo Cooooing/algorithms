@@ -11,7 +11,7 @@ public class longest_substring_without_repeating_characters_3 {
     /**
      * 滑动窗口
      */
-    public static int lengthOfLongestSubstring_2(String s) {
+    public int lengthOfLongestSubstring_2(String s) {
         int result = 0;
         // 记录字符最后出现的位置
         int[] last = new int[128];
@@ -31,7 +31,7 @@ public class longest_substring_without_repeating_characters_3 {
     /**
      * 暴力
      */
-    public static int lengthOfLongestSubstring_1(String s) {
+    public int lengthOfLongestSubstring_1(String s) {
         int result = 0;
         char[] str = s.toCharArray();
         int temp = 0;
